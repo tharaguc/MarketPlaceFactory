@@ -19,9 +19,10 @@ describe('MarketPalceFactory', () => {
 		await deploy();
 	})
 
-	describe('test', () => {
-		it('test', async () => {
-			expect( await marketPlaceFactory.createMarketPlace() ).to.equal(42);
+	describe('新規マケプレの作成', () => {
+		it('アドレスの確認', async () => {
+			const newMPAddress = await marketPlaceFactory.connect(addr1).callStatic.createMarketPlace("hoge");
+			console.log("\t address: ", newMPAddress);
 		})
 	})
 })

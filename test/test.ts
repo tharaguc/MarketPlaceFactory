@@ -1,28 +1,31 @@
 import { ethers } from 'hardhat';
 import { expect } from 'chai';
-import { MarketPlaceFactory } from '../typechain-types';
-import type { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
+import { DemoCollection, MarketPlaceFactory } from '../typechain-types';
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 
-describe('MarketPalceFactory', () => {
-	let marketPlaceFactory: MarketPlaceFactory;
-	let deployer: SignerWithAddress;
-	let addr1: SignerWithAddress;
-	let addr2: SignerWithAddress;
+describe('test', () => {
+	let addrs: SignerWithAddress[] = [];
+	it('shoud deploy and create mp', async () => {
+		[addrs[0], addrs[1], addrs[2]] = await ethers.getSigners();
+		const MPF = await ethers.getContractFactory('MarketPlaceFactory');
+		const MP = await ethers.getContractFactory('MarketPlace');
 
-	async function deploy() {
-		[ deployer, addr1, addr2 ] = await ethers.getSigners();
-		const MarketPlaceFactoryFactory = await ethers.getContractFactory('MarketPlaceFactory');
-		marketPlaceFactory = await MarketPlaceFactoryFactory.deploy();
-	}
+		const mf:MarketPlaceFactory = await MPF.deploy();
+		await mf.deployed();
 
-	beforeEach(async () => {
-		await deploy();
-	})
+		const tx1 = await mf.connect(addrs[0]).createMarketPlace("hoge", 3);
+		const tx2 = await mf.connect(addrs[1]).createMarketPlace("huga", 5);
 
-	describe('新規マケプレの作成', () => {
-		it('アドレスの確認', async () => {
-			const newMPAddress = await marketPlaceFactory.connect(addr1).callStatic.createMarketPlace("hoge");
-			console.log("\t address: ", newMPAddress);
-		})
+		const mpAddr1 = await mf.listOfMarketPlaces(0);
+		const mpAddr2 = await mf.listOfMarketPlaces(1);
+
+		const mp1 = await MP.attach(mpAddr1);
+		const mp2 = await MP.attach(mpAddr2);
+		console.log(mp1.address)
+		console.log(await mp1.name())
+		console.log(await mp1.owner())
+		console.log(mp2.address)
+		console.log(await mp2.name())
+		console.log(await mp2.owner())
 	})
 })

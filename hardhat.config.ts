@@ -10,8 +10,8 @@ const config: HardhatUserConfig = {
     localhost: {
       url: "http://127.0.0.1:8545"
     },
-    testnet: {
-      url: "", //Goerli or munbai
+    mumbai: {
+      url: "",
       accounts: [`0x${PRIVATE_KEY}`]
     }
   }
